@@ -14,6 +14,7 @@ import (
 	"github.com/rbpermadi/whim_assignment/handler"
 	"github.com/rbpermadi/whim_assignment/repository"
 	"github.com/rbpermadi/whim_assignment/usecase/conversion"
+	"github.com/rbpermadi/whim_assignment/usecase/convert_currencies"
 	"github.com/rbpermadi/whim_assignment/usecase/currency"
 )
 
@@ -42,7 +43,14 @@ func main() {
 
 	conversionHandler := delivery.NewConversionHandler(conversionUseCase)
 
-	h := handler.NewHandler(&currencyHandler, &conversionHandler)
+	// convert
+	convertCurrenciesUseCase := convert_currencies.NewService(&convert_currencies.Provider{
+		Repo: conversionRepo,
+	})
+
+	convertCurrenciesHandler := delivery.NewConvertCurrenciesHandler(convertCurrenciesUseCase)
+
+	h := handler.NewHandler(&currencyHandler, &conversionHandler, &convertCurrenciesHandler)
 
 	logger := log.New(os.Stderr, "logger: ", log.Lshortfile)
 	srv := &http.Server{
