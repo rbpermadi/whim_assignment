@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  mysql:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password --init-file /data/application/init.sql
+    volumes:
+      - ./db/whim_development.sql:/data/application/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: whim_development
+      MYSQL_DATABASE: whim_development
+      MYSQL_USER: whim_development
+      MYSQL_PASSWORD: whim_development
+    ports:
+      - "3306:3306"
+    container_name: whim-assignment-mysql
+  whim-assignment:
+    image: rbpermadi/whim-assignment
+    build: .
+    environment:
+      - ENV=dev
+      - APP_PORT=7171
+      - DATABASE_NAME=whim_development
+      - DATABASE_HOST=mysql
+      - DATABASE_PORT=3306
+      - DATABASE_USERNAME=whim_development
+      - DATABASE_PASSWORD=whim_development
+      - DATABASE_POOL=whim_development
+    ports:
+      - "7171:7171"
+    depends_on:
+      - mysql
