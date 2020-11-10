@@ -8,8 +8,7 @@ Whim Assigment is a repository for Whim Assigment Test Assignment. Its a web-ser
 
 ### Documentation
 
-- Blueprint
-  For API documentation, you can see it [here](https://rbpermadi.github.io/docs/whim_assignment_blueprint.html)
+- For API documentation, you can see it [here](https://rbpermadi.github.io/docs/whim_assignment_blueprint.html)
 
 - Database diagram
   ```
