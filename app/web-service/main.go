@@ -13,6 +13,7 @@ import (
 	"github.com/rbpermadi/whim_assignment/delivery"
 	"github.com/rbpermadi/whim_assignment/handler"
 	"github.com/rbpermadi/whim_assignment/repository"
+	"github.com/rbpermadi/whim_assignment/usecase/conversion"
 	"github.com/rbpermadi/whim_assignment/usecase/currency"
 )
 
@@ -31,7 +32,17 @@ func main() {
 
 	currencyHandler := delivery.NewCurrencyHandler(currencyUseCase)
 
-	h := handler.NewHandler(&currencyHandler)
+	// conversions
+	conversionRepo := repository.NewMysqlConversion(db)
+
+	conversionUseCase := conversion.NewService(&conversion.Provider{
+		Repo:         conversionRepo,
+		CurrencyRepo: currencyRepo,
+	})
+
+	conversionHandler := delivery.NewConversionHandler(conversionUseCase)
+
+	h := handler.NewHandler(&currencyHandler, &conversionHandler)
 
 	logger := log.New(os.Stderr, "logger: ", log.Lshortfile)
 	srv := &http.Server{
