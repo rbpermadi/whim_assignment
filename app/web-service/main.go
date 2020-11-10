@@ -10,7 +10,10 @@ import (
 	"github.com/subosito/gotenv"
 
 	"github.com/rbpermadi/whim_assignment/config"
+	"github.com/rbpermadi/whim_assignment/delivery"
 	"github.com/rbpermadi/whim_assignment/handler"
+	"github.com/rbpermadi/whim_assignment/repository"
+	"github.com/rbpermadi/whim_assignment/usecase/currency"
 )
 
 func main() {
@@ -19,7 +22,16 @@ func main() {
 	db := config.NewMySQL()
 	defer db.Close()
 
-	h := handler.NewHandler()
+	// currencies
+	currencyRepo := repository.NewMysqlCurrency(db)
+
+	currencyUseCase := currency.NewService(&currency.Provider{
+		Repo: currencyRepo,
+	})
+
+	currencyHandler := delivery.NewCurrencyHandler(currencyUseCase)
+
+	h := handler.NewHandler(&currencyHandler)
 
 	logger := log.New(os.Stderr, "logger: ", log.Lshortfile)
 	srv := &http.Server{
